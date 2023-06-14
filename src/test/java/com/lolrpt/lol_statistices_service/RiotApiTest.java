@@ -2,12 +2,13 @@ package com.lolrpt.lol_statistices_service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.http.HttpClient;
 
-@SpringBootTest
 public class RiotApiTest {
 
     @Test
@@ -15,24 +16,24 @@ public class RiotApiTest {
 
         String myRiotApiKey = ""; // Riot API Key
         String serverUrl = "https://kr.api.riotgames.com";
-        String testUrl = "/lol/summoner/v4/summoners/by-name/";
-
-        String name = "";
+        String testApiUrl = "/lol/summoner/v4/summoners/by-name/";
+        String name = "락도스";
         String summonerName = name.replaceAll(" ", "%20");
 
         try {
-            // RequestURL 설정하기
-            String urlstr = serverUrl + testUrl + summonerName + "?api_key=" + myRiotApiKey;
-            URL url = new URL(urlstr);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            // GET 방식으로 데이터를 가져오기
-            urlConnection.setRequestMethod("GET");
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("X-Riot-Token", myRiotApiKey);
+            headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 
+            String url = serverUrl + testApiUrl + summonerName + "?api_key=" + myRiotApiKey;;
+
+            String responseBody = restTemplate.getForObject(url, String.class);
+
+            System.out.println(responseBody);
 
         } catch ( Exception e ) {
-
+            e.printStackTrace();
         }
-
     }
-
 }
