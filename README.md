@@ -1,1 +1,1 @@
-# ★ Riot Statistices Service ★
+# Riot Statistices Service
