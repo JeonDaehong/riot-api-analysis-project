@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor
-public class MiniSeriesDTO {
+public class MiniSeriesDto {
 
     private int losses;
     private String progress;

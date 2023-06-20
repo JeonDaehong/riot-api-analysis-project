@@ -14,7 +14,7 @@ import java.util.List;
 public class TopRankLeagueListDto {
 
     private String leagueId;
-    private List<TopRankLeagueItemDTO> entries;
+    private List<TopRankLeagueItemDto> entries;
     private String tier;
     private String name;
     private String queue;

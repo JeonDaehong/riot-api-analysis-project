@@ -9,12 +9,12 @@ import lombok.ToString;
 @Getter
 @ToString
 @NoArgsConstructor
-public class TopRankLeagueItemDTO {
+public class TopRankLeagueItemDto {
 
     private boolean freshBlood;
     private int wins;
     private String summonerName;
-    private MiniSeriesDTO miniSeries;
+    private MiniSeriesDto miniSeries;
     private boolean inactive;
     private boolean veteran;
     private boolean hotStreak;
