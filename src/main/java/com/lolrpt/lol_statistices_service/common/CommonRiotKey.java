@@ -2,7 +2,7 @@ package com.lolrpt.lol_statistices_service.common;
 
 public class CommonRiotKey {
 
-    public static final String MY_RIOT_API_KEY = "="; // Riot API Key
+    public static final String MY_RIOT_API_KEY = ""; // Riot API Key
     public static final String REQUEST_API = "?api_key=";
     public static final String API_SERVER_URL = "https://kr.api.riotgames.com";
 
