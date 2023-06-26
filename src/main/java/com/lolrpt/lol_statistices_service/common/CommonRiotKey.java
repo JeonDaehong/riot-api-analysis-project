@@ -9,6 +9,7 @@ public class CommonRiotKey {
     public static class apiUrl {
 
         public static final String GET_SUMMONER_INFO_BY_USER_NAME = "/lol/summoner/v4/summoners/by-name/";
+        public static final String GET_SUMMONER_INFO_BY_SUMMONER_ID = "/lol/summoner/v4/summoners/";
         public static final String GET_SUMMONER_INFO_BY_TIER_CHALLENGER = "/lol/league/v4/challengerleagues/by-queue/RANKED_SOLO_5x5/";
         public static final String GET_SUMMONER_INFO_BY_TIER_GRANDMASTER = "/lol/league/v4/grandmasterleagues/by-queue/RANKED_SOLO_5x5/";
         public static final String GET_SUMMONER_INFO_BY_TIER_MASTER = "/lol/league/v4/masterleagues/by-queue/RANKED_SOLO_5x5/";
