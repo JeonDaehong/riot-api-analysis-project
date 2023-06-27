@@ -1,4 +1,5 @@
 package com.lolrpt.lol_statistices_service;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -21,6 +22,7 @@ public class MySQLConnectionTest {
     }
 
     @Test
+    @DisplayName("DB가 잘 연결 되는지 확인하여야 한다.")
     public void databaseConnectionTest() {
         try {
             String result = jdbcTemplate.queryForObject("SELECT 1", String.class);

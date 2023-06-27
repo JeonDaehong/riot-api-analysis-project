@@ -2,7 +2,7 @@ package com.lolrpt.lol_statistices_service.common;
 
 public class CommonRiotKey {
 
-    public static final String MY_RIOT_API_KEY = ""; // Riot API Key
+    public static final String MY_RIOT_API_KEY = "RGAPI-9dce3c66-12ee-4282-8e70-780be090d3bd"; // Riot API Key
     public static final String REQUEST_API = "?api_key=";
     public static final String API_SERVER_URL = "https://kr.api.riotgames.com";
 
@@ -16,6 +16,5 @@ public class CommonRiotKey {
         public static final String GET_SUMMONER_INFO_BY_TIER_ETC = "/lol/league/v4/entries/RANKED_SOLO_5x5/";
 
     }
-
 
 }
