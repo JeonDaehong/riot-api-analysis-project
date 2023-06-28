@@ -6,4 +6,10 @@ public interface RiotApiRequestService {
 
     void requestChallengerLeaguesAPI();
 
+    void requestSummonerChampionInfo();
+
+    void requestChampionProficiency();
+
+    void requestMostChampion();
+
 }

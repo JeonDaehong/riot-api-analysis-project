@@ -109,6 +109,23 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
     /**
      * Most 챔피언 & 챔피언 숙련도 DB에 추가하기
      */
+    @Override
+    @Transactional
+    public void requestSummonerChampionInfo() {
+
+    }
+
+    @Override
+    @Transactional
+    public void requestChampionProficiency() {
+
+    }
+
+    @Override
+    @Transactional
+    public void requestMostChampion() {
+
+    }
 
 
     /**
