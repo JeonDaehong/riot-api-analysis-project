@@ -21,6 +21,9 @@ public class LoLUserMaster {
     @Column(name = "SUMMONER_ID", nullable = false)
     private String summonerId;
 
+    @Column(name = "NUM", nullable = false)
+    private int num;
+
     @Column(name = "SUMMONER_NM", nullable = false)
     private String summonerName;
 
@@ -37,8 +40,9 @@ public class LoLUserMaster {
     private String accountId;
 
     @Builder
-    public LoLUserMaster(String summonerId, String summonerName, String summonerRank, String summonerTier, String puuid, String accountId) {
+    public LoLUserMaster(String summonerId, int num, String summonerName, String summonerRank, String summonerTier, String puuid, String accountId) {
         this.summonerId = summonerId;
+        this.num = num;
         this.summonerName = summonerName;
         this.summonerRank = summonerRank;
         this.summonerTier = summonerTier;

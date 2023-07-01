@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -57,6 +58,8 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
                 // Challenger 50명에 대한 정보가 담긴 List
                 List<TopRankLeagueItemDto> topRankLeagueItemDtoList = responseBodyDto.getEntries();
 
+                List<LoLUserMaster> loLUserMasterList = new ArrayList<>();
+                int number = 1; // Player Number Check ( DB AutoIncrement X )
                 for ( TopRankLeagueItemDto topRankLeagueItemDto : topRankLeagueItemDtoList ) {
 
                     // API 호출 Count가 Max에 도달할 시 잠시 Thread를 멈춤. 그리고 전역 변수를 초기화 함.
@@ -85,6 +88,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
 
                         LoLUserMaster lolUserMaster = LoLUserMaster.builder()
                                 .summonerId(topRankLeagueItemDto.getSummonerId())
+                                .num(number)
                                 .summonerName(topRankLeagueItemDto.getSummonerName())
                                 .summonerTier(responseBodyDto.getTier())
                                 .summonerRank(topRankLeagueItemDto.getRank())
@@ -92,10 +96,12 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
                                 .accountId(getPuuidResponseBodyDto.getAccountId())
                                 .build();// Entity 선언
 
-                        riotApiRequestRepository.save(lolUserMaster); // JPA Save
-
+                        log.info(lolUserMaster.toString());
+                        loLUserMasterList.add(lolUserMaster);
                     }
+                    number ++;
                 }
+                riotApiRequestRepository.saveAll(loLUserMasterList); // JPA Save ( saveAll(); )
             }
 
         } catch (Exception e) {
@@ -105,7 +111,6 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
 
         }
     }
-
     /**
      * Most 챔피언 & 챔피언 숙련도 DB에 추가하기
      */
