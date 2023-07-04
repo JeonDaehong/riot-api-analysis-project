@@ -9,5 +9,11 @@ body {
     left: 0;
     width: 100%;
     height: 50px;
-    background-color: mediumpurple;
+    background-color: #a623f3;
+}
+
+.headerCategory {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 15pt;
 }
