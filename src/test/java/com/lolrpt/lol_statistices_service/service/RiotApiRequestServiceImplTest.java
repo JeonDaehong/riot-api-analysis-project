@@ -6,11 +6,8 @@ import com.lolrpt.lol_statistices_service.dto.SummonerDTO;
 import com.lolrpt.lol_statistices_service.dto.TopRankLeagueItemDto;
 import com.lolrpt.lol_statistices_service.dto.TopRankLeagueListDto;
 import com.lolrpt.lol_statistices_service.dto.entity.LoLUserMaster;
-import com.lolrpt.lol_statistices_service.repository.RiotApiRequestRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
