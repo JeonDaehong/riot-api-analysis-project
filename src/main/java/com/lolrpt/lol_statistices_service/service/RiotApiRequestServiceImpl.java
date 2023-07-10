@@ -3,6 +3,7 @@ package com.lolrpt.lol_statistices_service.service;
 import com.lolrpt.lol_statistices_service.common.ApiCount;
 import com.lolrpt.lol_statistices_service.common.ApiCountCheckGlobalValue;
 import com.lolrpt.lol_statistices_service.common.CommonRiotKey;
+import com.lolrpt.lol_statistices_service.dto.ChampionMasteryDto;
 import com.lolrpt.lol_statistices_service.dto.SummonerDTO;
 import com.lolrpt.lol_statistices_service.dto.TopRankLeagueItemDto;
 import com.lolrpt.lol_statistices_service.dto.TopRankLeagueListDto;
@@ -10,6 +11,7 @@ import com.lolrpt.lol_statistices_service.dto.entity.LoLUserMaster;
 import com.lolrpt.lol_statistices_service.repository.LoLUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,6 +61,9 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
         ApiCountCheckGlobalValue.setMinuteCount(ApiCountCheckGlobalValue.getMinuteCount() + 1);
     }
 
+    /**
+     * 모든 유저 정보 가져와서 DB에 넣기
+     */
     @Override
     @Transactional
     public void requestUserInfoEachTier() {
@@ -82,9 +88,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
             ResponseEntity<TopRankLeagueListDto> responseEntity = restTemplate.getForEntity(url, TopRankLeagueListDto.class);
             TopRankLeagueListDto responseBodyDto = responseEntity.getBody();
 
-            // Api 호출한 횟수 증가
-            ApiCountCheckGlobalValue.setSecondCount(ApiCountCheckGlobalValue.getSecondCount() + 1);
-            ApiCountCheckGlobalValue.setMinuteCount(ApiCountCheckGlobalValue.getMinuteCount() + 1);
+            apiCountPlusMethod(); // Api 호출한 횟수 증가
 
             if (responseBodyDto != null) {
 
@@ -135,24 +139,22 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
     }
 
     /**
-     * 모든 유저의 챔피언 Table에 숙련도 Update 해주기
+     * 모든 유저의 챔피언 Table 숙련도 Update 해주기
      */
     @Override
     @Transactional
     public void championProficiencyUpdate() {
 
         try {
-
             Optional<List<LoLUserMaster>> optionalLolUserMasterList = Optional.ofNullable(loLUserRepository.findAll());
             optionalLolUserMasterList.ifPresent(lolUserMasterList -> {
                 apiCountCheckMethod();
                 lolUserMasterList
                         .forEach(userMaster -> requestChampionProficiency(userMaster.getSummonerId()));
             });
-
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("requestChallengerLeaguesAPI Method Exception Error : {} ", e.getMessage());
+            log.error("championProficiencyUpdate Method Exception Error : {} ", e.getMessage());
         }
     }
 
@@ -164,10 +166,30 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
     @Transactional
     public void requestChampionProficiency(@Param("summonerId") String summonerId) {
 
+        try {
+
+            // RestTemplate List 받는 방법. 먼저 Arr 받고, 그걸 List 변환. ( getForObject 활용 )
+            RestTemplate restTemplate = new RestTemplate();
+            String url = CommonRiotKey.API_SERVER_URL + CommonRiotKey.apiUrl.GET_CHAMPION_PROFICIENCY_BY_SUMMONER_ID + summonerId + CommonRiotKey.REQUEST_API + CommonRiotKey.MY_RIOT_API_KEY;
+            ChampionMasteryDto[] responseEntityArr = restTemplate.getForObject(url, ChampionMasteryDto[].class);
+
+            apiCountPlusMethod();
+
+            if (responseEntityArr != null) {
+
+                List<ChampionMasteryDto> championMasteryDtoList = Arrays.asList(responseEntityArr);
+
+                // JPA 해당 summonerId 와 챔피언 아이디가 championMasteryDtoList 의 챔피언 아이디와 알맞을 경우 숙련도 점수 Update
+                // 즉, Mybatis 기준으로 UPDATE TABLE SET 숙련도 = #{숙련도점수}, UPDT_DTTM = NOW() WHERE SUMMONER_ID = #{summonerId} AND CHAMP_ID = #{championId} 를 JPA 로 구현.
 
 
-        apiCountPlusMethod();
+
+            }
+
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            log.error("requestChampionProficiency Method Exception Error : {} ", e.getMessage());
+        }
 
     }
-
 }
