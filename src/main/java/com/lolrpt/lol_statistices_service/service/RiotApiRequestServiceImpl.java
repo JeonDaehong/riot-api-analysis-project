@@ -7,11 +7,10 @@ import com.lolrpt.lol_statistices_service.dto.ChampionMasteryDto;
 import com.lolrpt.lol_statistices_service.dto.SummonerDTO;
 import com.lolrpt.lol_statistices_service.dto.TopRankLeagueItemDto;
 import com.lolrpt.lol_statistices_service.dto.TopRankLeagueListDto;
-import com.lolrpt.lol_statistices_service.dto.entity.LoLUserMaster;
-import com.lolrpt.lol_statistices_service.repository.LoLUserRepository;
+import com.lolrpt.lol_statistices_service.dto.entity.UserMaster;
+import com.lolrpt.lol_statistices_service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,7 @@ import java.util.Optional;
 @Slf4j
 public class RiotApiRequestServiceImpl implements RiotApiRequestService {
 
-    private final LoLUserRepository loLUserRepository;
+    private final UserRepository loLUserRepository;
 
     /**
      * API 횟수 증가 메서드
@@ -95,7 +94,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
                 // Challenger 50명에 대한 정보가 담긴 List
                 List<TopRankLeagueItemDto> topRankLeagueItemDtoList = responseBodyDto.getEntries();
 
-                List<LoLUserMaster> loLUserMasterList = new ArrayList<>();
+                List<UserMaster> loLUserMasterList = new ArrayList<>();
                 int number = 1; // Player Number Check ( DB AutoIncrement X )
                 for ( TopRankLeagueItemDto topRankLeagueItemDto : topRankLeagueItemDtoList ) {
 
@@ -112,7 +111,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
                     // 문제가 없을 시, DB에 저장해야하는 Entity 만들기
                     if ( getPuuidResponseBodyDto != null ) {
 
-                        LoLUserMaster lolUserMaster = LoLUserMaster.builder()
+                        UserMaster lolUserMaster = UserMaster.builder()
                                 .summonerId(topRankLeagueItemDto.getSummonerId())
                                 .num(number)
                                 .summonerName(topRankLeagueItemDto.getSummonerName())
@@ -146,7 +145,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
     public void championProficiencyUpdate() {
 
         try {
-            Optional<List<LoLUserMaster>> optionalLolUserMasterList = Optional.ofNullable(loLUserRepository.findAll());
+            Optional<List<UserMaster>> optionalLolUserMasterList = Optional.ofNullable(loLUserRepository.findAll());
             optionalLolUserMasterList.ifPresent(lolUserMasterList -> {
                 apiCountCheckMethod();
                 lolUserMasterList
@@ -181,7 +180,17 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
 
                 // JPA 해당 summonerId 와 챔피언 아이디가 championMasteryDtoList 의 챔피언 아이디와 알맞을 경우 숙련도 점수 Update
                 // 즉, Mybatis 기준으로 UPDATE TABLE SET 숙련도 = #{숙련도점수}, UPDT_DTTM = NOW() WHERE SUMMONER_ID = #{summonerId} AND CHAMP_ID = #{championId} 를 JPA 로 구현.
+                for ( ChampionMasteryDto championMasteryDto : championMasteryDtoList ) {
 
+                    /*
+                    if ( ) {
+
+                        updateChampAndUpdatedAt(A B C);
+
+                    }
+                    */
+
+                }
 
 
             }

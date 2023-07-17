@@ -5,17 +5,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "TB_LOL_USER_MST")
 @Getter
 @ToString
 @NoArgsConstructor
-public class LoLUserMaster {
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public class UserMaster extends Common {
 
     @Id
     @Column(name = "SUMMONER_ID", nullable = false)
@@ -40,7 +39,9 @@ public class LoLUserMaster {
     private String accountId;
 
     @Builder
-    public LoLUserMaster(String summonerId, int num, String summonerName, String summonerRank, String summonerTier, String puuid, String accountId) {
+    public UserMaster(String summonerId, int num, String summonerName, String summonerRank,
+                      String summonerTier, String puuid, String accountId,
+                      LocalDateTime createdDateTime, LocalDateTime updatedDateTime) {
         this.summonerId = summonerId;
         this.num = num;
         this.summonerName = summonerName;

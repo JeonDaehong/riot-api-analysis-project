@@ -3,7 +3,7 @@ package com.lolrpt.lol_statistices_service.service;
 import com.lolrpt.lol_statistices_service.common.ApiCount;
 import com.lolrpt.lol_statistices_service.common.CommonRiotKey;
 import com.lolrpt.lol_statistices_service.dto.*;
-import com.lolrpt.lol_statistices_service.dto.entity.LoLUserMaster;
+import com.lolrpt.lol_statistices_service.dto.entity.UserMaster;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 class RiotApiRequestServiceImplTest {
 
@@ -65,7 +64,7 @@ class RiotApiRequestServiceImplTest {
                 // 문제가 없을 시, DB에 저장해야하는 Entity 만들기
                 if ( getPuuidResponseBodyDto != null ) {
 
-                    LoLUserMaster lolUserMaster = LoLUserMaster.builder()
+                    UserMaster lolUserMaster = UserMaster.builder()
                             .summonerId(topRankLeagueItemDto.getSummonerId())
                             .num(checkNum)
                             .summonerName(topRankLeagueItemDto.getSummonerName())
