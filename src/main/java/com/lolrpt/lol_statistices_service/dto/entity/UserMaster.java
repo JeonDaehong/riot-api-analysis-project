@@ -13,7 +13,8 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 @NoArgsConstructor
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorValue("USER")
 public class UserMaster extends Common {
 
     @Id
@@ -49,5 +50,7 @@ public class UserMaster extends Common {
         this.summonerTier = summonerTier;
         this.puuid = puuid;
         this.accountId = accountId;
+        this.createdDateTime = createdDateTime;
+        this.updatedDateTime = updatedDateTime;
     }
 }

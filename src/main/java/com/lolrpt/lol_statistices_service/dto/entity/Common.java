@@ -1,19 +1,17 @@
 package com.lolrpt.lol_statistices_service.dto.entity;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
+@DiscriminatorColumn(name = "COMMON")
 public class Common {
 
     @Column(name = "CRTE_DTTM")
-    private LocalDateTime createdDateTime;
+    protected LocalDateTime createdDateTime;
 
     @Column(name = "UPDT_DTTM")
-    private LocalDateTime updatedDateTime;
+    protected LocalDateTime updatedDateTime;
 
     @PrePersist
     protected void onCreate() {
