@@ -10,6 +10,10 @@ public interface UserChampionInfoRepository extends JpaRepository<UserChampionIn
 
     @Modifying
     @Query("UPDATE UserChampionInfo SET proficiencyScore = :proficiencyScore, updatedDateTime = CURRENT_TIMESTAMP WHERE summonerId = :summonerId AND championId = :championId")
-    void updateChampAndUpdatedAt(@Param("proficiencyScore") int proficiencyScore, @Param("summonerId") String summonerId, @Param("championId") String championId);
+    void updateChampAndUpdatedAt(@Param("proficiencyScore") int proficiencyScore, @Param("summonerId") String summonerId, @Param("championId") long championId);
+
+    @Modifying
+    @Query("SELECT COUNT(UserChampionInfo.summonerId) FROM UserChampionInfo WHERE summonerId = :summonerId AND championId = :championId")
+    int findByIdAndChampId(@Param("summonerId") String summonerId, @Param("championId") long championId);
 
 }

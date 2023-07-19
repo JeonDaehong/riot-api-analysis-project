@@ -20,13 +20,13 @@ public class UserChampionInfo extends Common {
     private String summonerId;
 
     @Column(name = "CHAMP_ID", nullable = false)
-    private String championId;
+    private long championId;
 
     @Column(name = "PRFCN_SCORE", nullable = false)
     private int proficiencyScore;
 
     @Builder
-    public UserChampionInfo(String summonerId, String championId, int proficiencyScore) {
+    public UserChampionInfo(String summonerId, long championId, int proficiencyScore) {
         this.summonerId = summonerId;
         this.championId = championId;
         this.proficiencyScore = proficiencyScore;

@@ -8,6 +8,7 @@ import com.lolrpt.lol_statistices_service.dto.SummonerDTO;
 import com.lolrpt.lol_statistices_service.dto.TopRankLeagueItemDto;
 import com.lolrpt.lol_statistices_service.dto.TopRankLeagueListDto;
 import com.lolrpt.lol_statistices_service.dto.entity.UserMaster;
+import com.lolrpt.lol_statistices_service.repository.UserChampionInfoRepository;
 import com.lolrpt.lol_statistices_service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ import java.util.Optional;
 public class RiotApiRequestServiceImpl implements RiotApiRequestService {
 
     private final UserRepository loLUserRepository;
+    private final UserChampionInfoRepository userChampionInfoRepository;
 
     /**
      * API 횟수 증가 메서드
@@ -182,13 +184,22 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
                 // 즉, Mybatis 기준으로 UPDATE TABLE SET 숙련도 = #{숙련도점수}, UPDT_DTTM = NOW() WHERE SUMMONER_ID = #{summonerId} AND CHAMP_ID = #{championId} 를 JPA 로 구현.
                 for ( ChampionMasteryDto championMasteryDto : championMasteryDtoList ) {
 
-                    /*
-                    if ( ) {
+                    String thisSummonerId = championMasteryDto.getSummonerId();
+                    long thisChampionId = championMasteryDto.getChampionId();
+                    int proficiencyScore = championMasteryDto.getChampionPoints();
 
-                        updateChampAndUpdatedAt(A B C);
+                    int returnCount = userChampionInfoRepository.findByIdAndChampId(thisSummonerId, thisChampionId);
+
+                    if ( returnCount > 0 ) {
+
+                        // 챔피언 숙련도 업데이트
+                        userChampionInfoRepository.updateChampAndUpdatedAt(proficiencyScore, thisSummonerId, thisChampionId);
+
+                    } else {
+                        
+                        // Insert Row
 
                     }
-                    */
 
                 }
 
