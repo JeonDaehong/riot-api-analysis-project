@@ -7,6 +7,7 @@ import com.lolrpt.lol_statistices_service.dto.ChampionMasteryDto;
 import com.lolrpt.lol_statistices_service.dto.SummonerDTO;
 import com.lolrpt.lol_statistices_service.dto.TopRankLeagueItemDto;
 import com.lolrpt.lol_statistices_service.dto.TopRankLeagueListDto;
+import com.lolrpt.lol_statistices_service.dto.entity.UserChampionInfo;
 import com.lolrpt.lol_statistices_service.dto.entity.UserMaster;
 import com.lolrpt.lol_statistices_service.repository.UserChampionInfoRepository;
 import com.lolrpt.lol_statistices_service.repository.UserRepository;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -121,6 +123,8 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
                                 .summonerRank(topRankLeagueItemDto.getRank())
                                 .puuid(getPuuidResponseBodyDto.getPuuid())
                                 .accountId(getPuuidResponseBodyDto.getAccountId())
+                                .createdDateTime(LocalDateTime.now())
+                                .updatedDateTime(LocalDateTime.now())
                                 .build();// Entity 선언
 
                         log.info(lolUserMaster.toString());
@@ -197,7 +201,17 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
 
                     } else {
                         
-                        // Insert Row
+                        // 대상이 없다면 Insert Row
+                        UserChampionInfo insertUserChampionInfo = UserChampionInfo.builder()
+                                .summonerId(championMasteryDto.getSummonerId())
+                                .championId(championMasteryDto.getChampionId())
+                                .proficiencyScore(championMasteryDto.getChampionPoints())
+                                .createdDateTime(LocalDateTime.now())
+                                .updatedDateTime(LocalDateTime.now())
+                                .build();
+
+                        log.info(insertUserChampionInfo.toString());
+                        userChampionInfoRepository.save(insertUserChampionInfo);
 
                     }
 

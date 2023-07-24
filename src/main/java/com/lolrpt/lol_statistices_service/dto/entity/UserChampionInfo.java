@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "TB_USER_CHAMP_INFO")
@@ -26,10 +27,13 @@ public class UserChampionInfo extends Common {
     private int proficiencyScore;
 
     @Builder
-    public UserChampionInfo(String summonerId, long championId, int proficiencyScore) {
+    public UserChampionInfo(String summonerId, long championId, int proficiencyScore,
+                            LocalDateTime createdDateTime, LocalDateTime updatedDateTime) {
         this.summonerId = summonerId;
         this.championId = championId;
         this.proficiencyScore = proficiencyScore;
+        this.createdDateTime = createdDateTime;
+        this.updatedDateTime = updatedDateTime;
     }
 
 }
