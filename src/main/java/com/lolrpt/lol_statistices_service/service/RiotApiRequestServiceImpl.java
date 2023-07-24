@@ -132,6 +132,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
                     }
                     number ++;
                 }
+
                 loLUserRepository.saveAll(loLUserMasterList); // JPA Save ( saveAll(); )
             }
 
