@@ -70,10 +70,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
     @Override
     @Transactional
     public void requestUserInfoEachTier() {
-
         requestChallengerLeaguesAPI(); // Request Challenger User
-
-
     }
 
     /**
@@ -135,12 +132,9 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
 
                 loLUserRepository.saveAll(loLUserMasterList); // JPA Save ( saveAll(); )
             }
-
         } catch (Exception e) {
-
             e.printStackTrace();
             log.error("requestChallengerLeaguesAPI Method Exception Error : {} ", e.getMessage());
-
         }
     }
 
@@ -215,16 +209,11 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
                         userChampionInfoRepository.save(insertUserChampionInfo);
 
                     }
-
                 }
-
-
             }
-
         } catch ( Exception e ) {
             e.printStackTrace();
             log.error("requestChampionProficiency Method Exception Error : {} ", e.getMessage());
         }
-
     }
 }
