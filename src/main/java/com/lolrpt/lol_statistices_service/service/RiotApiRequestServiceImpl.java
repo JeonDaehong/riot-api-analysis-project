@@ -3,6 +3,7 @@ package com.lolrpt.lol_statistices_service.service;
 import com.lolrpt.lol_statistices_service.common.ApiCount;
 import com.lolrpt.lol_statistices_service.common.ApiCountCheckGlobalValue;
 import com.lolrpt.lol_statistices_service.common.CommonRiotKey;
+import com.lolrpt.lol_statistices_service.common.enumFile.Rank;
 import com.lolrpt.lol_statistices_service.dto.ChampionMasteryDto;
 import com.lolrpt.lol_statistices_service.dto.SummonerDTO;
 import com.lolrpt.lol_statistices_service.dto.TopRankLeagueItemDto;
@@ -216,4 +217,23 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
             log.error("requestChampionProficiency Method Exception Error : {} ", e.getMessage());
         }
     }
+
+    /**
+     * 쪼꼬롤빵에서 측정하는 장인점수 통계 공식
+     */
+    @Override
+    @Transactional
+    public int artisanScoreCalculation(@Param("rank") String rank, @Param("tier") String tier, @Param("playCount") int playCount,
+                                @Param("winRate") double winRate, @Param("proficiency") int proficiency) {
+
+        int artisanScore = 0;
+
+        if (rank.equals(Rank.DIAMOND.toString())) {
+            System.out.println("Test");
+        }
+
+        return artisanScore;
+
+    }
+
 }

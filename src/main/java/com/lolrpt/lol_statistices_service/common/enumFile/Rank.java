@@ -1,6 +1,6 @@
-package com.lolrpt.lol_statistices_service.common.enum
+package com.lolrpt.lol_statistices_service.common.enumFile;
 
-enum class LoLTier {
+public enum Rank {
     IRON,
     BRONZE,
     SILVER,
