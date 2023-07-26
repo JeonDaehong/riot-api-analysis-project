@@ -1,4 +1,4 @@
-package com.lolrpt.lol_statistices_service.utils;
+package com.lolrpt.lol_statistices_service.common;
 
 /**
  * 성공 코드와, 실패 코드를 나누기 위해 만든 Class

@@ -1,4 +1,4 @@
-package com.lolrpt.lol_statistices_service.utils;
+package com.lolrpt.lol_statistices_service.common;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
