@@ -33,6 +33,10 @@ dependencies {
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     //testImplementation 'org.springframework.security:spring-security-test'
+
+    // AI Lib
+    implementation 'org.apache.commons:commons-math3:3.6.1' // Lasso
+    implementation 'org.apache.spark:spark-mllib_2.12:3.1.2' // PLS
 }
 
 tasks.named('test') {
