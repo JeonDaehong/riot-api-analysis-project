@@ -1,4 +1,5 @@
 package com.lolrpt.lol_statistices_service;
+import com.lolrpt.lol_statistices_service.common.enumFile.Rank;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
