@@ -4,6 +4,7 @@ import com.lolrpt.lol_statistices_service.common.ApiCount;
 import com.lolrpt.lol_statistices_service.common.ApiCountCheckGlobalValue;
 import com.lolrpt.lol_statistices_service.common.CommonRiotKey;
 import com.lolrpt.lol_statistices_service.common.enumFile.Rank;
+import com.lolrpt.lol_statistices_service.common.enumFile.Tier;
 import com.lolrpt.lol_statistices_service.dto.ChampionMasteryDto;
 import com.lolrpt.lol_statistices_service.dto.SummonerDTO;
 import com.lolrpt.lol_statistices_service.dto.TopRankLeagueItemDto;
@@ -228,9 +229,31 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
 
         int artisanScore = 0;
 
+        // Rank & Tier 별 장인 점수 추가
         if (rank.equals(Rank.DIAMOND.toString())) {
-            System.out.println("Test");
+
+            if (tier.equals(Tier.III.toString())) { artisanScore = 30; }
+            else if (tier.equals(Tier.II.toString())) { artisanScore = 60; }
+            else if (tier.equals(Tier.I.toString())) { artisanScore = 90; }
+
+        } else if (rank.equals(Rank.MASTER.toString())) {
+
+            artisanScore = 120;
+
+        } else if (rank.equals(Rank.GRANDMASTER.toString())) {
+
+            artisanScore = 150;
+
+        } else if (rank.equals(Rank.CHALLENGER.toString())) {
+
+            artisanScore = 210;
+
         }
+
+        // 승률로 장인 점수 계산
+        artisanScore -= 100; // example
+
+        if ( artisanScore < 0 ) { artisanScore = 0; }
 
         return artisanScore;
 
