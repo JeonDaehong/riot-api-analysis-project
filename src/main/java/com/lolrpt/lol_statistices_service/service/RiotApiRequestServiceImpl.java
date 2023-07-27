@@ -229,33 +229,42 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
 
         int artisanScore = 0;
 
-        // Rank & Tier 별 장인 점수 추가
+        // Rank & Tier 별 장인 점수 게산
         if (rank.equals(Rank.DIAMOND.toString())) {
-
-            if (tier.equals(Tier.III.toString())) { artisanScore = 30; }
-            else if (tier.equals(Tier.II.toString())) { artisanScore = 60; }
-            else if (tier.equals(Tier.I.toString())) { artisanScore = 90; }
-
+            if (tier.equals(Tier.III.toString())) {
+                artisanScore += 30;
+            } else if (tier.equals(Tier.II.toString())) {
+                artisanScore += 60;
+            } else if (tier.equals(Tier.I.toString())) {
+                artisanScore += 90;
+            }
         } else if (rank.equals(Rank.MASTER.toString())) {
-
-            artisanScore = 120;
-
+            artisanScore += 120;
         } else if (rank.equals(Rank.GRANDMASTER.toString())) {
-
-            artisanScore = 150;
-
+            artisanScore += 150;
         } else if (rank.equals(Rank.CHALLENGER.toString())) {
-
-            artisanScore = 210;
-
+            artisanScore += 210;
         }
 
         // 승률로 장인 점수 계산
-        artisanScore -= 100; // example
+        int rateScore = 0;
+        int intWinRate = (int) winRate;
 
-        if ( artisanScore < 0 ) { artisanScore = 0; }
+        if (intWinRate > 50) {
+            int difference = intWinRate - 50;
+            rateScore = difference * 5;
+        } else if (intWinRate < 50){
+            int difference = 50 - intWinRate;
+            rateScore = -difference * 5;
+        }
 
-        return artisanScore;
+        artisanScore += rateScore; // 점수 ++
+
+
+        // KDA로 점수 계산하기
+
+
+        return Math.max(artisanScore, 0);
 
     }
 
