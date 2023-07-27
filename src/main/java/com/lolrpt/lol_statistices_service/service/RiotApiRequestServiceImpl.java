@@ -227,9 +227,11 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
     public int artisanScoreCalculation(@Param("rank") String rank, @Param("tier") String tier, @Param("playCount") int playCount,
                                 @Param("winRate") double winRate, @Param("proficiency") int proficiency) {
 
+        if ( playCount < 50) return 0; // 판수가 50판이 넘지 않으면, 장인 점수 = 0
+
         int artisanScore = 0;
 
-        // Rank & Tier 별 장인 점수 게산
+        // Rank & Tier로 장인 점수 추가 게산
         if (rank.equals(Rank.DIAMOND.toString())) {
             if (tier.equals(Tier.III.toString())) {
                 artisanScore += 30;
@@ -246,7 +248,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
             artisanScore += 210;
         }
 
-        // 승률로 장인 점수 계산
+        // 승률로 장인 점수 추가 계산
         int rateScore = 0;
         int intWinRate = (int) winRate;
 
@@ -261,11 +263,13 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
         artisanScore += rateScore; // 점수 ++
 
 
-        // KDA로 점수 계산하기
+        // 판수로 장인 점수 추가 계산
+        artisanScore += playCount;
 
+        // 숙련도로 장인 점수 추가 계산
+        artisanScore += (proficiency / 20000);
 
-        return Math.max(artisanScore, 0);
-
+        return Math.max(artisanScore, 0); // 혹시 음수일 경우 0점 return
     }
 
 }
