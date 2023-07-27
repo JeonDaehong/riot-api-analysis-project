@@ -249,19 +249,10 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
         }
 
         // 승률로 장인 점수 추가 계산
-        int rateScore = 0;
         int intWinRate = (int) winRate;
-
-        if (intWinRate > 50) {
-            int difference = intWinRate - 50;
-            rateScore = difference * 5;
-        } else if (intWinRate < 50){
-            int difference = 50 - intWinRate;
-            rateScore = -difference * 5;
-        }
-
-        artisanScore += rateScore; // 점수 ++
-
+        int difference = Math.abs(intWinRate - 50);
+        int rateScore = (intWinRate > 50) ? difference * 5 : -difference * 5;
+        artisanScore += rateScore;
 
         // 판수로 장인 점수 추가 계산
         artisanScore += playCount;
