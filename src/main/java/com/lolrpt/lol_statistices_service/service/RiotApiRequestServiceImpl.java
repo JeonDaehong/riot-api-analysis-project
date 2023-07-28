@@ -2,6 +2,7 @@ package com.lolrpt.lol_statistices_service.service;
 
 import com.lolrpt.lol_statistices_service.common.ApiCount;
 import com.lolrpt.lol_statistices_service.common.ApiCountCheckGlobalValue;
+import com.lolrpt.lol_statistices_service.common.ApiCountMethod;
 import com.lolrpt.lol_statistices_service.common.CommonRiotKey;
 import com.lolrpt.lol_statistices_service.common.enumFile.Rank;
 import com.lolrpt.lol_statistices_service.common.enumFile.Tier;
@@ -35,36 +36,32 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
     private final UserRepository loLUserRepository;
     private final UserChampionInfoRepository userChampionInfoRepository;
 
-    /**
-     * API 횟수 증가 메서드
-     * API 호출 Count가 Max에 도달할 시 잠시 Thread를 멈춤. 그리고 전역 변수를 초기화 함.
-     */
     @Override
-    @Transactional
-    public void apiCountCheckMethod() {
-        try {
-            if ( ApiCountCheckGlobalValue.getSecondCount() == ApiCount.SECOND_MAX_COUNT ) {
-                Thread.sleep(ApiCount.SECOND_TIME);
-                ApiCountCheckGlobalValue.setSecondCount(0);
-            }
-
-            if ( ApiCountCheckGlobalValue.getMinuteCount() == ApiCount.MINUTE_MAX_COUNT ) {
-                Thread.sleep(ApiCount.MINUTE_TIME);
-                ApiCountCheckGlobalValue.setMinuteCount(0);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error("requestChallengerLeaguesAPI Method Exception Error : {} ", e.getMessage());
-        }
+    public UserMaster createUserMasterFromDto(TopRankLeagueItemDto topRankLeagueItemDto, String tier, SummonerDTO getPuuidResponseBodyDto, int number) {
+        return UserMaster.builder()
+                .summonerId(topRankLeagueItemDto.getSummonerId())
+                .num(number)
+                .summonerName(topRankLeagueItemDto.getSummonerName())
+                .summonerTier(tier)
+                .summonerRank(topRankLeagueItemDto.getRank())
+                .puuid(getPuuidResponseBodyDto.getPuuid())
+                .accountId(getPuuidResponseBodyDto.getAccountId())
+                .createdDateTime(LocalDateTime.now())
+                .updatedDateTime(LocalDateTime.now())
+                .build();
     }
 
-    /**
-     * Api 호출 카운트 올려주는 메서드
-     */
-    public void apiCountPlusMethod() {
-        ApiCountCheckGlobalValue.setSecondCount(ApiCountCheckGlobalValue.getSecondCount() + 1);
-        ApiCountCheckGlobalValue.setMinuteCount(ApiCountCheckGlobalValue.getMinuteCount() + 1);
+    @Override
+    public UserChampionInfo createUserChampionInfoFromDto(ChampionMasteryDto championMasteryDto) {
+        return UserChampionInfo.builder()
+                .summonerId(championMasteryDto.getSummonerId())
+                .championId(championMasteryDto.getChampionId())
+                .proficiencyScore(championMasteryDto.getChampionPoints())
+                .createdDateTime(LocalDateTime.now())
+                .updatedDateTime(LocalDateTime.now())
+                .build();
     }
+
 
     /**
      * 모든 유저 정보 가져와서 DB에 넣기
@@ -90,7 +87,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
             ResponseEntity<TopRankLeagueListDto> responseEntity = restTemplate.getForEntity(url, TopRankLeagueListDto.class);
             TopRankLeagueListDto responseBodyDto = responseEntity.getBody();
 
-            apiCountPlusMethod(); // Api 호출한 횟수 증가
+            ApiCountMethod.apiCountPlusMethod(); // Api 호출한 횟수 증가
 
             if (responseBodyDto != null) {
 
@@ -101,7 +98,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
                 int number = 1; // Player Number Check ( DB AutoIncrement X )
                 for ( TopRankLeagueItemDto topRankLeagueItemDto : topRankLeagueItemDtoList ) {
 
-                    apiCountCheckMethod(); // API 호출 Count가 Max에 도달할 시 잠시 Thread를 멈춤. 그리고 전역 변수를 초기화 함.
+                    ApiCountMethod.apiCountCheckMethod(); // API 호출 Count가 Max에 도달할 시 잠시 Thread를 멈춤. 그리고 전역 변수를 초기화 함.
 
                     // Challenger 1명의 SummonerId로 해당 User의 Puuid 가져오기
                     RestTemplate getPuuidRestTemplate = new RestTemplate();
@@ -109,24 +106,12 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
                     ResponseEntity<SummonerDTO> getPuuidResponseEntity = restTemplate.getForEntity(getPuuidUrl, SummonerDTO.class);
                     SummonerDTO getPuuidResponseBodyDto = getPuuidResponseEntity.getBody();
 
-                    apiCountPlusMethod(); // Api 호출한 횟수 증가
+                    ApiCountMethod.apiCountPlusMethod(); // Api 호출한 횟수 증가
 
                     // 문제가 없을 시, DB에 저장해야하는 Entity 만들기
                     if ( getPuuidResponseBodyDto != null ) {
 
-                        UserMaster lolUserMaster = UserMaster.builder()
-                                .summonerId(topRankLeagueItemDto.getSummonerId())
-                                .num(number)
-                                .summonerName(topRankLeagueItemDto.getSummonerName())
-                                .summonerTier(responseBodyDto.getTier())
-                                .summonerRank(topRankLeagueItemDto.getRank())
-                                .puuid(getPuuidResponseBodyDto.getPuuid())
-                                .accountId(getPuuidResponseBodyDto.getAccountId())
-                                .createdDateTime(LocalDateTime.now())
-                                .updatedDateTime(LocalDateTime.now())
-                                .build();// Entity 선언
-
-                        log.info(lolUserMaster.toString());
+                        UserMaster lolUserMaster = createUserMasterFromDto(topRankLeagueItemDto, responseBodyDto.getTier(), getPuuidResponseBodyDto, number++);
                         loLUserMasterList.add(lolUserMaster);
                     }
                     number ++;
@@ -150,7 +135,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
         try {
             Optional<List<UserMaster>> optionalLolUserMasterList = Optional.ofNullable(loLUserRepository.findAll());
             optionalLolUserMasterList.ifPresent(lolUserMasterList -> {
-                apiCountCheckMethod();
+                ApiCountMethod.apiCountCheckMethod();
                 lolUserMasterList
                         .forEach(userMaster -> requestChampionProficiency(userMaster.getSummonerId()));
             });
@@ -175,7 +160,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
             String url = CommonRiotKey.API_SERVER_URL + CommonRiotKey.apiUrl.GET_CHAMPION_PROFICIENCY_BY_SUMMONER_ID + summonerId + CommonRiotKey.REQUEST_API + CommonRiotKey.MY_RIOT_API_KEY;
             ChampionMasteryDto[] responseEntityArr = restTemplate.getForObject(url, ChampionMasteryDto[].class);
 
-            apiCountPlusMethod();
+            ApiCountMethod.apiCountPlusMethod();
 
             if (responseEntityArr != null) {
 
@@ -199,14 +184,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
                     } else {
                         
                         // 대상이 없다면 Insert Row
-                        UserChampionInfo insertUserChampionInfo = UserChampionInfo.builder()
-                                .summonerId(championMasteryDto.getSummonerId())
-                                .championId(championMasteryDto.getChampionId())
-                                .proficiencyScore(championMasteryDto.getChampionPoints())
-                                .createdDateTime(LocalDateTime.now())
-                                .updatedDateTime(LocalDateTime.now())
-                                .build();
-
+                        UserChampionInfo insertUserChampionInfo = createUserChampionInfoFromDto(championMasteryDto);
                         log.info(insertUserChampionInfo.toString());
                         userChampionInfoRepository.save(insertUserChampionInfo);
 
