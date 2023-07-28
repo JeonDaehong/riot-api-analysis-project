@@ -1,11 +1,9 @@
 package com.lolrpt.lol_statistices_service.service;
 
-import com.lolrpt.lol_statistices_service.common.ApiCount;
-import com.lolrpt.lol_statistices_service.common.ApiCountCheckGlobalValue;
 import com.lolrpt.lol_statistices_service.common.ApiCountMethod;
 import com.lolrpt.lol_statistices_service.common.CommonRiotKey;
-import com.lolrpt.lol_statistices_service.common.enumFile.Rank;
-import com.lolrpt.lol_statistices_service.common.enumFile.Tier;
+import com.lolrpt.lol_statistices_service.common.Rank;
+import com.lolrpt.lol_statistices_service.common.Tier;
 import com.lolrpt.lol_statistices_service.dto.ChampionMasteryDto;
 import com.lolrpt.lol_statistices_service.dto.SummonerDTO;
 import com.lolrpt.lol_statistices_service.dto.TopRankLeagueItemDto;
@@ -61,7 +59,6 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
                 .updatedDateTime(LocalDateTime.now())
                 .build();
     }
-
 
     /**
      * 모든 유저 정보 가져와서 DB에 넣기
@@ -210,20 +207,32 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
         int artisanScore = 0;
 
         // Rank & Tier로 장인 점수 추가 게산
-        if (rank.equals(Rank.DIAMOND.toString())) {
-            if (tier.equals(Tier.III.toString())) {
-                artisanScore += 30;
-            } else if (tier.equals(Tier.II.toString())) {
-                artisanScore += 60;
-            } else if (tier.equals(Tier.I.toString())) {
-                artisanScore += 90;
-            }
-        } else if (rank.equals(Rank.MASTER.toString())) {
-            artisanScore += 120;
-        } else if (rank.equals(Rank.GRANDMASTER.toString())) {
-            artisanScore += 150;
-        } else if (rank.equals(Rank.CHALLENGER.toString())) {
-            artisanScore += 210;
+        switch (rank) {
+            case Rank.DIAMOND:
+                switch (tier) {
+                    case Tier.IV_tier:
+                        artisanScore += 0;
+                        break;
+                    case Tier.III_tier:
+                        artisanScore += 30;
+                        break;
+                    case Tier.II_tier:
+                        artisanScore += 60;
+                        break;
+                    case Tier.I_tier:
+                        artisanScore += 90;
+                        break;
+                }
+                break;
+            case Rank.MASTER:
+                artisanScore += 120;
+                break;
+            case Rank.GRANDMASTER:
+                artisanScore += 150;
+                break;
+            case Rank.CHALLENGER:
+                artisanScore += 210;
+                break;
         }
 
         // 승률로 장인 점수 추가 계산
