@@ -161,18 +161,15 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
 
             if (responseEntityArr != null) {
 
-                List<ChampionMasteryDto> championMasteryDtoList = Arrays.asList(responseEntityArr);
-
                 // JPA 해당 summonerId 와 챔피언 아이디가 championMasteryDtoList 의 챔피언 아이디와 알맞을 경우 숙련도 점수 Update
                 // 즉, Mybatis 기준으로 UPDATE TABLE SET 숙련도 = #{숙련도점수}, UPDT_DTTM = NOW() WHERE SUMMONER_ID = #{summonerId} AND CHAMP_ID = #{championId} 를 JPA 로 구현.
-                for ( ChampionMasteryDto championMasteryDto : championMasteryDtoList ) {
+                for ( ChampionMasteryDto championMasteryDto : responseEntityArr) {
 
                     String thisSummonerId = championMasteryDto.getSummonerId();
                     long thisChampionId = championMasteryDto.getChampionId();
                     int proficiencyScore = championMasteryDto.getChampionPoints();
 
                     int returnCount = userChampionInfoRepository.findByIdAndChampId(thisSummonerId, thisChampionId);
-
                     if ( returnCount > 0 ) {
 
                         // 챔피언 숙련도 업데이트
