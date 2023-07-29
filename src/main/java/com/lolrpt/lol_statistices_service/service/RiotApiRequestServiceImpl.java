@@ -130,7 +130,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
     public void championProficiencyUpdate() {
 
         try {
-            Optional<List<UserMaster>> optionalLolUserMasterList = Optional.ofNullable(loLUserRepository.findAll());
+            Optional<List<UserMaster>> optionalLolUserMasterList = Optional.of(loLUserRepository.findAll());
             optionalLolUserMasterList.ifPresent(lolUserMasterList -> {
                 ApiCountMethod.apiCountCheckMethod();
                 lolUserMasterList
