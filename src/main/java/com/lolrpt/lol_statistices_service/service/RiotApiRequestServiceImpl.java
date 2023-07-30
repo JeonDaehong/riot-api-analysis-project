@@ -35,7 +35,8 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
     private final UserChampionInfoRepository userChampionInfoRepository;
 
     @Override
-    public UserMaster createUserMasterFromDto(TopRankLeagueItemDto topRankLeagueItemDto, String tier, SummonerDTO getPuuidResponseBodyDto, int number) {
+    public UserMaster createUserMasterFromDto(TopRankLeagueItemDto topRankLeagueItemDto, String tier,
+                                              SummonerDTO getPuuidResponseBodyDto, int number) {
         return UserMaster.builder()
                 .summonerId(topRankLeagueItemDto.getSummonerId())
                 .num(number)
@@ -99,7 +100,11 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
 
                     // Challenger 1명의 SummonerId로 해당 User의 Puuid 가져오기
                     RestTemplate getPuuidRestTemplate = new RestTemplate();
-                    String getPuuidUrl = CommonRiotKey.API_SERVER_URL + CommonRiotKey.apiUrl.GET_SUMMONER_INFO_BY_SUMMONER_ID + topRankLeagueItemDto.getSummonerId() + CommonRiotKey.REQUEST_API + CommonRiotKey.MY_RIOT_API_KEY;
+                    String getPuuidUrl = CommonRiotKey.API_SERVER_URL
+                                        + CommonRiotKey.apiUrl.GET_SUMMONER_INFO_BY_SUMMONER_ID
+                                        + topRankLeagueItemDto.getSummonerId()
+                                        + CommonRiotKey.REQUEST_API
+                                        + CommonRiotKey.MY_RIOT_API_KEY;
                     ResponseEntity<SummonerDTO> getPuuidResponseEntity = restTemplate.getForEntity(getPuuidUrl, SummonerDTO.class);
                     SummonerDTO getPuuidResponseBodyDto = getPuuidResponseEntity.getBody();
 
@@ -154,7 +159,11 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
 
             // RestTemplate List 받는 방법. 먼저 Arr 받고, 그걸 List 변환. ( getForObject 활용 )
             RestTemplate restTemplate = new RestTemplate();
-            String url = CommonRiotKey.API_SERVER_URL + CommonRiotKey.apiUrl.GET_CHAMPION_PROFICIENCY_BY_SUMMONER_ID + summonerId + CommonRiotKey.REQUEST_API + CommonRiotKey.MY_RIOT_API_KEY;
+            String url = CommonRiotKey.API_SERVER_URL
+                        + CommonRiotKey.apiUrl.GET_CHAMPION_PROFICIENCY_BY_SUMMONER_ID
+                        + summonerId
+                        + CommonRiotKey.REQUEST_API
+                        + CommonRiotKey.MY_RIOT_API_KEY;
             ChampionMasteryDto[] responseEntityArr = restTemplate.getForObject(url, ChampionMasteryDto[].class);
 
             ApiCountMethod.apiCountPlusMethod();
@@ -197,7 +206,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
     @Override
     @Transactional
     public int artisanScoreCalculation(@Param("rank") String rank, @Param("tier") String tier, @Param("playCount") int playCount,
-                                @Param("winRate") double winRate, @Param("proficiency") int proficiency) {
+                                       @Param("winRate") double winRate, @Param("proficiency") int proficiency) {
 
         if ( playCount < 50) return 0; // 판수가 50판이 넘지 않으면, 장인 점수 = 0
 

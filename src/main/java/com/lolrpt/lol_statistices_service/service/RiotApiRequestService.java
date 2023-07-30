@@ -9,7 +9,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface RiotApiRequestService {
 
-    UserMaster createUserMasterFromDto(TopRankLeagueItemDto topRankLeagueItemDto, String tier, SummonerDTO getPuuidResponseBodyDto, int number);
+    UserMaster createUserMasterFromDto(TopRankLeagueItemDto topRankLeagueItemDto, String tier,
+                                       SummonerDTO getPuuidResponseBodyDto, int number);
 
     UserChampionInfo createUserChampionInfoFromDto(ChampionMasteryDto championMasteryDto);
 
