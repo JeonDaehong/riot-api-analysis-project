@@ -139,7 +139,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
             optionalLolUserMasterList.ifPresent(lolUserMasterList -> {
                 ApiCountMethod.apiCountCheckMethod();
                 lolUserMasterList
-                        .forEach(userMaster -> requestChampionProficiency(userMaster.getSummonerId()));
+                        .forEach(this::requestChampionProficiency);
             });
         } catch (Exception e) {
             e.printStackTrace();
@@ -153,7 +153,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
      */
     @Override
     @Transactional
-    public void requestChampionProficiency(@Param("summonerId") String summonerId) {
+    public void requestChampionProficiency(@Param("userMaster") UserMaster userMaster) {
 
         try {
 
@@ -161,7 +161,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
             RestTemplate restTemplate = new RestTemplate();
             String url = CommonRiotKey.API_SERVER_URL
                         + CommonRiotKey.apiUrl.GET_CHAMPION_PROFICIENCY_BY_SUMMONER_ID
-                        + summonerId
+                        + userMaster.getSummonerId()
                         + CommonRiotKey.REQUEST_API
                         + CommonRiotKey.MY_RIOT_API_KEY;
             ChampionMasteryDto[] responseEntityArr = restTemplate.getForObject(url, ChampionMasteryDto[].class);
@@ -183,6 +183,9 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
 
                         // 챔피언 숙련도 업데이트
                         userChampionInfoRepository.updateChampAndUpdatedAt(proficiencyScore, thisSummonerId, thisChampionId);
+                        
+                        // 숙련도 점수 업데이트
+
 
                     } else {
                         
@@ -201,14 +204,14 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
     }
 
     /**
-     * 쪼꼬롤빵에서 측정하는 장인점수 통계 공식
+     * 쪼꼬롤빵에서 측정하는 장인점수 통계 공식 점수
      */
     @Override
     @Transactional
     public int artisanScoreCalculation(@Param("rank") String rank, @Param("tier") String tier, @Param("playCount") int playCount,
                                        @Param("winRate") double winRate, @Param("proficiency") int proficiency) {
 
-        if ( playCount < 50) return 0; // 판수가 50판이 넘지 않으면, 장인 점수 = 0
+        if ( playCount < 50 ) return 0; // 판수가 50판이 넘지 않으면, 장인 점수 = 0
 
         int artisanScore = 0;
 

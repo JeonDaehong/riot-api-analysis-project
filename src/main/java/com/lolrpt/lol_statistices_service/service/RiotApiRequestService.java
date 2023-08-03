@@ -20,9 +20,8 @@ public interface RiotApiRequestService {
 
     void championProficiencyUpdate();
 
-    void requestChampionProficiency(@Param("summonerId") String summonerId);
+    void requestChampionProficiency(UserMaster userMaster);
 
-    int artisanScoreCalculation(@Param("rank") String rank, @Param("tier") String tier, @Param("playCount") int playCount,
-                                @Param("winRate") double winRate, @Param("proficiency") int proficiency);
+    int artisanScoreCalculation(String rank, String tier, int playCount, double winRate, int proficiency);
 
 }
