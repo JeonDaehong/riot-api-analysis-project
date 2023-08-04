@@ -26,12 +26,16 @@ public class UserChampionInfo extends Common {
     @Column(name = "PRFCN_SCORE", nullable = false)
     private int proficiencyScore;
 
+    @Column(name = "ARTISAN_SCORE", nullable = false)
+    private int artisanScore;
+
     @Builder
-    public UserChampionInfo(String summonerId, long championId, int proficiencyScore,
+    public UserChampionInfo(String summonerId, long championId, int proficiencyScore, int artisanScore,
                             LocalDateTime createdDateTime, LocalDateTime updatedDateTime) {
         this.summonerId = summonerId;
         this.championId = championId;
         this.proficiencyScore = proficiencyScore;
+        this.artisanScore = artisanScore;
         this.createdDateTime = createdDateTime;
         this.updatedDateTime = updatedDateTime;
     }

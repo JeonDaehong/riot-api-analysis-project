@@ -157,11 +157,15 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
 
         try {
 
+            String summonerId = userMaster.getSummonerId();
+            String rank = userMaster.getSummonerRank();
+            String tier = userMaster.getSummonerTier();
+
             // RestTemplate List 받는 방법. 먼저 Arr 받고, 그걸 List 변환. ( getForObject 활용 )
             RestTemplate restTemplate = new RestTemplate();
             String url = CommonRiotKey.API_SERVER_URL
                         + CommonRiotKey.apiUrl.GET_CHAMPION_PROFICIENCY_BY_SUMMONER_ID
-                        + userMaster.getSummonerId()
+                        + summonerId
                         + CommonRiotKey.REQUEST_API
                         + CommonRiotKey.MY_RIOT_API_KEY;
             ChampionMasteryDto[] responseEntityArr = restTemplate.getForObject(url, ChampionMasteryDto[].class);
@@ -174,18 +178,20 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
                 // 즉, Mybatis 기준으로 UPDATE TABLE SET 숙련도 = #{숙련도점수}, UPDT_DTTM = NOW() WHERE SUMMONER_ID = #{summonerId} AND CHAMP_ID = #{championId} 를 JPA 로 구현.
                 for ( ChampionMasteryDto championMasteryDto : responseEntityArr) {
 
-                    String thisSummonerId = championMasteryDto.getSummonerId();
                     long thisChampionId = championMasteryDto.getChampionId();
                     int proficiencyScore = championMasteryDto.getChampionPoints();
 
-                    int returnCount = userChampionInfoRepository.findByIdAndChampId(thisSummonerId, thisChampionId);
+                    int returnCount = userChampionInfoRepository.findByIdAndChampId(summonerId, thisChampionId);
                     if ( returnCount > 0 ) {
 
                         // 챔피언 숙련도 업데이트
-                        userChampionInfoRepository.updateChampAndUpdatedAt(proficiencyScore, thisSummonerId, thisChampionId);
-                        
-                        // 숙련도 점수 업데이트
+                        userChampionInfoRepository.updateChampAndUpdatedAt(proficiencyScore, summonerId, thisChampionId);
 
+                        // 장인 점수 받아오기
+                        // artisanScoreCalculation( ??? );
+
+                        // 장인 점수 업데이트
+                        //userChampionInfoRepository.updateArtisanScore( ??? );
 
                     } else {
                         
