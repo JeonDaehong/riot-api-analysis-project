@@ -188,10 +188,10 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
                         userChampionInfoRepository.updateChampAndUpdatedAt(proficiencyScore, summonerId, thisChampionId);
 
                         // 장인 점수 받아오기
-                        // artisanScoreCalculation( ??? );
+                        int artisanScore = 0; // artisanScoreCalculation( ??? );
 
                         // 장인 점수 업데이트
-                        //userChampionInfoRepository.updateArtisanScore( ??? );
+                        userChampionInfoRepository.updateArtisanScore(artisanScore, summonerId, thisChampionId);
 
                     } else {
                         
