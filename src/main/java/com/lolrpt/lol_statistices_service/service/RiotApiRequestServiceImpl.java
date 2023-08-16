@@ -209,6 +209,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
         }
     }
 
+
     /**
      * 쪼꼬롤빵에서 측정하는 장인점수 통계 공식 점수
      */
