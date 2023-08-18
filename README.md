@@ -1,1 +1,1 @@
-# 1. Riot_Statistices_Service
+Riot_Statistices_Service
