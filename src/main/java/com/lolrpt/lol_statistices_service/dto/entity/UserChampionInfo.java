@@ -23,6 +23,15 @@ public class UserChampionInfo extends Common {
     @Column(name = "CHAMP_ID", nullable = false)
     private long championId;
 
+    @Column(name = "PLAY_COUNT", nullable = false)
+    private int playCount;
+
+    @Column(name = "WIN_RATE", nullable = false)
+    private double winRate;
+
+    @Column(name = "KDA", nullable = false)
+    private double kda;
+
     @Column(name = "PRFCN_SCORE", nullable = false)
     private int proficiencyScore;
 
