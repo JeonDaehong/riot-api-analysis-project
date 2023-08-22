@@ -13,7 +13,8 @@ public class RiotApiController {
 
     private final RiotApiRequestService riotApiRequestService;
 
-    @GetMapping("/test.svc")
+
+    @GetMapping("/test")
     public void testController() {
         riotApiRequestService.requestUserInfoEachTier();
     }
