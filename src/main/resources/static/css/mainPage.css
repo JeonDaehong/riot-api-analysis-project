@@ -18,6 +18,7 @@ body {
 .mainPageBody {
     width: 100%;
 }
+
 /* 800px 이하일 때 스타일 변경 */
 @media (max-width: 800px) {
     .mainPageBody {
