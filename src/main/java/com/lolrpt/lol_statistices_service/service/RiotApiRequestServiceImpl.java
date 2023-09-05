@@ -1,13 +1,7 @@
 package com.lolrpt.lol_statistices_service.service;
 
-import com.lolrpt.lol_statistices_service.common.ApiCountMethod;
-import com.lolrpt.lol_statistices_service.common.CommonRiotKey;
-import com.lolrpt.lol_statistices_service.common.Rank;
-import com.lolrpt.lol_statistices_service.common.Tier;
-import com.lolrpt.lol_statistices_service.dto.ChampionMasteryDto;
-import com.lolrpt.lol_statistices_service.dto.SummonerDTO;
-import com.lolrpt.lol_statistices_service.dto.TopRankLeagueItemDto;
-import com.lolrpt.lol_statistices_service.dto.TopRankLeagueListDto;
+import com.lolrpt.lol_statistices_service.common.*;
+import com.lolrpt.lol_statistices_service.dto.*;
 import com.lolrpt.lol_statistices_service.dto.entity.UserChampionInfo;
 import com.lolrpt.lol_statistices_service.dto.entity.UserMaster;
 import com.lolrpt.lol_statistices_service.repository.UserChampionInfoRepository;
@@ -25,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -265,5 +260,133 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
 
         return Math.max(artisanScore, 0); // 혹시 음수일 경우 0점 return
     }
+
+    public void inititalUserChampionInfo() throws InterruptedException {
+        // API Call Count
+        int SECOND_COUNT = 0;
+        int MINUTE_COUNT = 0;
+
+        // Challenger User 불러오기
+        RestTemplate restTemplate = new RestTemplate();
+        String url = CommonRiotKey.API_SERVER_URL + CommonRiotKey.apiUrl.GET_SUMMONER_INFO_BY_TIER_CHALLENGER + CommonRiotKey.REQUEST_API + CommonRiotKey.MY_RIOT_API_KEY;
+        ResponseEntity<TopRankLeagueListDto> responseEntity = restTemplate.getForEntity(url, TopRankLeagueListDto.class);
+        TopRankLeagueListDto responseBodyDto = responseEntity.getBody();
+
+        SECOND_COUNT ++;
+        MINUTE_COUNT ++;
+
+        if (responseBodyDto != null) {
+
+            // Challenger 50명에 대한 정보가 담긴 List
+            List<TopRankLeagueItemDto> topRankLeagueItemDtoList = responseBodyDto.getEntries();
+
+            int checkNum = 1;
+
+            for ( TopRankLeagueItemDto topRankLeagueItemDto : topRankLeagueItemDtoList ) {
+
+                if ( SECOND_COUNT == ApiCount.SECOND_MAX_COUNT ) {
+                    Thread.sleep(ApiCount.SECOND_TIME);
+                    SECOND_COUNT = 0;
+                }
+
+                if ( MINUTE_COUNT == ApiCount.MINUTE_MAX_COUNT ) {
+                    Thread.sleep(ApiCount.MINUTE_TIME);
+                    MINUTE_COUNT = 0;
+                }
+
+                // Challenger 1명의 SummonerId로 해당 User의 Puuid 가져오기
+                RestTemplate getPuuidRestTemplate = new RestTemplate();
+                String getPuuidUrl = CommonRiotKey.API_SERVER_URL + CommonRiotKey.apiUrl.GET_SUMMONER_INFO_BY_SUMMONER_ID + topRankLeagueItemDto.getSummonerId() + CommonRiotKey.REQUEST_API + CommonRiotKey.MY_RIOT_API_KEY;
+                ResponseEntity<SummonerDTO> getPuuidResponseEntity = restTemplate.getForEntity(getPuuidUrl, SummonerDTO.class);
+                SummonerDTO getPuuidResponseBodyDto = getPuuidResponseEntity.getBody();
+
+                SECOND_COUNT ++;
+                MINUTE_COUNT ++;
+
+                // 문제가 없을 시, DB에 저장해야하는 Entity 만들기
+                if ( getPuuidResponseBodyDto != null ) {
+
+                    UserMaster lolUserMaster = createUserMasterFromDto(topRankLeagueItemDto, responseBodyDto.getTier(), getPuuidResponseBodyDto, checkNum);
+
+                    System.out.println("User " + checkNum + " : " + lolUserMaster.toString());
+
+                    // get match id by puuid (only solo rank)
+                    // start time. end time, count, 지정할 수 있게 바꿔야하는건가
+                    int start = 0;
+                    MatchIdDto matchIdDto = new MatchIdDto();
+                    for(;;) {
+
+                        /* puuid에 대한 match id 전부 가져오기 */
+                        RestTemplate getMatchIdRestTemplate = new RestTemplate();
+                        String getMatchIdUrl = CommonRiotKey.apiUrl.GET_MATCH_ID_BY_SUMMONER_PUUID + getPuuidResponseBodyDto.getPuuid()
+                                + "/ids?queue=420&start=" + start + "&count=100&type=ranked" + "&api_key=" + CommonRiotKey.MY_RIOT_API_KEY;
+                        ResponseEntity<String> getMatchIdResponseEntity = getMatchIdRestTemplate.getForEntity(getMatchIdUrl, String.class);
+                        String matchIds = getMatchIdResponseEntity.getBody();
+                        if(matchIds.equals("[]")){break;}
+
+                        List<String> matchIdList = Arrays.stream(matchIds.replaceAll("[\\[\\]\"\"]", "").split(","))
+                                .map(String::trim)
+                                .collect(Collectors.toList()); // String -> String[] -> List<String>
+                        //matchIdDto = new MatchIdDto(matchIdList);
+                        matchIdDto.addMatchId(matchIdList);
+                        start += 100;
+                    }
+
+                    // DB insert
+                    // 리스트에서 골라 넣는 작업 필요
+
+                    SECOND_COUNT ++;
+                    MINUTE_COUNT ++;
+
+                    // get match data for each match id
+                    RestTemplate getMatchRestTemplate = new RestTemplate();
+                    for(String matchId : matchIdDto.getMatchIds()){
+                        if ( SECOND_COUNT == ApiCount.SECOND_MAX_COUNT ) {
+                            Thread.sleep(ApiCount.SECOND_TIME);
+                            SECOND_COUNT = 0;
+                        }
+
+                        if ( MINUTE_COUNT == ApiCount.MINUTE_MAX_COUNT ) {
+                            Thread.sleep(ApiCount.MINUTE_TIME);
+                            MINUTE_COUNT = 0;
+                        }
+
+                        String getMatchUrl = CommonRiotKey.apiUrl.GET_MATCH_BY_MATCH_ID + matchId
+                                + "/" + CommonRiotKey.REQUEST_API + CommonRiotKey.MY_RIOT_API_KEY;
+                        ResponseEntity<MatchDto> getMatchResponseEntity = getMatchRestTemplate.getForEntity(getMatchUrl, MatchDto.class);
+                        MatchDto getMatchResponseBodyDto = getMatchResponseEntity.getBody();
+                        System.out.println(getMatchResponseBodyDto);
+
+                        SECOND_COUNT ++;
+                        MINUTE_COUNT ++;
+
+                        // InfoDto.participants[] 안에 있는 data 사용
+                        // championId로 DB table에 해당 챔피언 플레이 횟수 증가
+                        // assists, deaths, kills를 해당 챔피언 row에 증가 -> kda
+                        // win == true 면 해당 챔피언 win++ false면 lose++
+                        ParticipantDto participantDto = getMatchResponseBodyDto.getInfo().getParticipants().get(0);
+                        int assists = participantDto.getAssists();
+                        int deaths = participantDto.getDeaths();
+                        int kills = participantDto.getKills();
+                        double kda = deaths == 0 ? (double) (assists + kills) / 1 : (double) (assists + kills) / deaths;
+                        boolean win = participantDto.isWin();
+
+
+                        System.out.println("assists = " + assists);
+                        System.out.println("deaths = " + deaths);
+                        System.out.println("kills = " + kills);
+                        System.out.println("kda = " + kda);
+                        System.out.println("win = " + win);
+                    }
+                } else {
+                    System.out.println("User " + checkNum + " : API Call Fail ");
+
+                }
+                checkNum ++;
+
+            }
+        }
+    }
+
 
 }
