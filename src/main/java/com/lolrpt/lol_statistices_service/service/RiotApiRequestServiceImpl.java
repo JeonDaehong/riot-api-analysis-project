@@ -262,9 +262,9 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
     }
 
     public void inititalUserChampionInfo() throws InterruptedException {
+
         // API Call Count
-        int SECOND_COUNT = 0;
-        int MINUTE_COUNT = 0;
+        ApiCountMethod.apiCountPlusMethod();
 
         // Challenger User 불러오기
         RestTemplate restTemplate = new RestTemplate();
@@ -272,8 +272,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
         ResponseEntity<TopRankLeagueListDto> responseEntity = restTemplate.getForEntity(url, TopRankLeagueListDto.class);
         TopRankLeagueListDto responseBodyDto = responseEntity.getBody();
 
-        SECOND_COUNT ++;
-        MINUTE_COUNT ++;
+        ApiCountMethod.apiCountPlusMethod();
 
         if (responseBodyDto != null) {
 
@@ -284,15 +283,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
 
             for ( TopRankLeagueItemDto topRankLeagueItemDto : topRankLeagueItemDtoList ) {
 
-                if ( SECOND_COUNT == ApiCount.SECOND_MAX_COUNT ) {
-                    Thread.sleep(ApiCount.SECOND_TIME);
-                    SECOND_COUNT = 0;
-                }
-
-                if ( MINUTE_COUNT == ApiCount.MINUTE_MAX_COUNT ) {
-                    Thread.sleep(ApiCount.MINUTE_TIME);
-                    MINUTE_COUNT = 0;
-                }
+                ApiCountMethod.apiCountCheckMethod();
 
                 // Challenger 1명의 SummonerId로 해당 User의 Puuid 가져오기
                 RestTemplate getPuuidRestTemplate = new RestTemplate();
@@ -300,8 +291,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
                 ResponseEntity<SummonerDTO> getPuuidResponseEntity = restTemplate.getForEntity(getPuuidUrl, SummonerDTO.class);
                 SummonerDTO getPuuidResponseBodyDto = getPuuidResponseEntity.getBody();
 
-                SECOND_COUNT ++;
-                MINUTE_COUNT ++;
+                ApiCountMethod.apiCountPlusMethod();
 
                 // 문제가 없을 시, DB에 저장해야하는 Entity 만들기
                 if ( getPuuidResponseBodyDto != null ) {
@@ -335,21 +325,13 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
                     // DB insert
                     // 리스트에서 골라 넣는 작업 필요
 
-                    SECOND_COUNT ++;
-                    MINUTE_COUNT ++;
+                    ApiCountMethod.apiCountPlusMethod();
 
                     // get match data for each match id
                     RestTemplate getMatchRestTemplate = new RestTemplate();
                     for(String matchId : matchIdDto.getMatchIds()){
-                        if ( SECOND_COUNT == ApiCount.SECOND_MAX_COUNT ) {
-                            Thread.sleep(ApiCount.SECOND_TIME);
-                            SECOND_COUNT = 0;
-                        }
 
-                        if ( MINUTE_COUNT == ApiCount.MINUTE_MAX_COUNT ) {
-                            Thread.sleep(ApiCount.MINUTE_TIME);
-                            MINUTE_COUNT = 0;
-                        }
+                        ApiCountMethod.apiCountCheckMethod();
 
                         String getMatchUrl = CommonRiotKey.apiUrl.GET_MATCH_BY_MATCH_ID + matchId
                                 + "/" + CommonRiotKey.REQUEST_API + CommonRiotKey.MY_RIOT_API_KEY;
@@ -357,8 +339,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
                         MatchDto getMatchResponseBodyDto = getMatchResponseEntity.getBody();
                         System.out.println(getMatchResponseBodyDto);
 
-                        SECOND_COUNT ++;
-                        MINUTE_COUNT ++;
+                        ApiCountMethod.apiCountPlusMethod();
 
                         // InfoDto.participants[] 안에 있는 data 사용
                         // championId로 DB table에 해당 챔피언 플레이 횟수 증가
