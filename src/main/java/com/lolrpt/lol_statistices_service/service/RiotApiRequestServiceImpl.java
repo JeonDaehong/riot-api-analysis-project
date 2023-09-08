@@ -305,7 +305,6 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
                     int start = 0;
                     MatchIdDto matchIdDto = new MatchIdDto();
                     for(;;) {
-
                         /* puuid에 대한 match id 전부 가져오기 */
                         RestTemplate getMatchIdRestTemplate = new RestTemplate();
                         String getMatchIdUrl = CommonRiotKey.apiUrl.GET_MATCH_ID_BY_SUMMONER_PUUID + getPuuidResponseBodyDto.getPuuid()
@@ -324,7 +323,6 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
 
                     // DB insert
                     // 리스트에서 골라 넣는 작업 필요
-
                     ApiCountMethod.apiCountPlusMethod();
 
                     // get match data for each match id
@@ -349,7 +347,7 @@ public class RiotApiRequestServiceImpl implements RiotApiRequestService {
                         int assists = participantDto.getAssists();
                         int deaths = participantDto.getDeaths();
                         int kills = participantDto.getKills();
-                        double kda = deaths == 0 ? (double) (assists + kills) / 1 : (double) (assists + kills) / deaths;
+                        double kda = deaths == 0 ? (double) (assists + kills) : (double) (assists + kills) / deaths;
                         boolean win = participantDto.isWin();
 
 
