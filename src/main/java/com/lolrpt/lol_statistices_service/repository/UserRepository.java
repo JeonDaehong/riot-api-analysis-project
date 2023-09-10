@@ -10,6 +10,6 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<UserMaster, Object> {
 
     @Query("SELECT puuid FROM UserMaster WHERE summonerTier IN ('DIAMOND', 'MASTER', 'GRANDMASTER', 'CHALLENGER')")
-    List<String> getFilteredResults();
+    List<String> getPuuidBySummonerTier();
 
 }
