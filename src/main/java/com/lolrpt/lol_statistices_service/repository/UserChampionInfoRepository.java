@@ -25,8 +25,16 @@ public interface UserChampionInfoRepository extends JpaRepository<UserChampionIn
     /**
      * DB에 소환사 + 챔피언 정보가 있는지 확인
      */
-    @Modifying
     @Query(value = "SELECT COUNT(*) FROM UserChampionInfo WHERE summonerId = :summonerId AND championId = :championId", nativeQuery = true)
     int findByIdAndChampId(@Param("summonerId") String summonerId, @Param("championId") long championId);
+
+
+
+    @Query(value = "SELECT puuid FROM UserChampionInfo where puuid = :puuid")
+    String findByPuuid(@Param("puuid") String puuid);
+
+    @Modifying
+    @Query(value = "UPDATE UserChampionInfo SET killCount = :kill, deathCount = :death, assistCount = :assist, playCount = :play_count, winCount = :win_count, lossCount = :defeat_count, winRate = :win_rate, kda = :kda WHERE puuid = :puuid AND championId = :champId")
+    void updateUserChampionInfo(@Param("kill") int kill, @Param("death") int death, @Param("assist") int assist, @Param("play_count") int play_count, @Param("win_count") int win_count, @Param("defeat_count") int defeat_count, @Param("win_rate") double win_rate, @Param("kda") double kda);
 
 }

@@ -65,5 +65,4 @@ public class UserChampionInfo extends Common {
         this.createdDateTime = createdDateTime;
         this.updatedDateTime = updatedDateTime;
     }
-
 }
