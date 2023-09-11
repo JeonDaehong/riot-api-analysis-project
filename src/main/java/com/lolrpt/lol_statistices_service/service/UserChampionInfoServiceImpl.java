@@ -15,7 +15,7 @@ public class UserChampionInfoServiceImpl implements UserChampionInfoService{
 
     private final UserChampionInfoRepository userChampionInfoRepository;
 
-    UserChampionInfo createUserChampionInfo(String SummerId, String puuid, long champId){
+    public UserChampionInfo createUserChampionInfo(String SummerId, String puuid, long champId){
         return UserChampionInfo.builder()
                 .summonerId(SummerId)
                 .puuid(puuid)
@@ -30,14 +30,14 @@ public class UserChampionInfoServiceImpl implements UserChampionInfoService{
         // 1. UserChampionInfo 안에 puuid에 해당하는 ChampId가 존재하는지 확인
         // 1.1 존재하지 않는다면 그대로 insert 후 return
         String check_puuid = userChampionInfoRepository.findByPuuid(puuid);
-        if(check_puuid.equals("")){
+        if (check_puuid.equals("")) {
             createUserChampionInfo(SummerId, puuid, champId);
         }
         // 2. 존재하다면 해당 row에서 kill, death, assist에 kill, death, assist ++
         // 2.1 더해진 kill, death, assist로  KDA계산해서 update
         // 2.2 win == true 면 해당 row의 win count에 ++ 아니라면 defeat count에 ++
         // return
-        else{
+        else {
 
         }
     }
