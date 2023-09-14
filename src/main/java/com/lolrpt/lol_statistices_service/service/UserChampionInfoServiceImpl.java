@@ -15,8 +15,9 @@ public class UserChampionInfoServiceImpl implements UserChampionInfoService{
 
     private final UserChampionInfoRepository userChampionInfoRepository;
 
-    public UserChampionInfo createUserChampionInfo(String SummerId, String puuid, long champId){
-        return UserChampionInfo.builder()
+    @Override
+    public void createUserChampionInfo(String SummerId, String puuid, long champId){
+        UserChampionInfo.builder()
                 .summonerId(SummerId)
                 .puuid(puuid)
                 .championId(champId)
