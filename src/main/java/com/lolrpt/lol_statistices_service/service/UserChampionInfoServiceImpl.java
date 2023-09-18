@@ -5,6 +5,7 @@ import com.lolrpt.lol_statistices_service.repository.UserChampionInfoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -26,6 +27,7 @@ public class UserChampionInfoServiceImpl implements UserChampionInfoService{
                 .build();
     }
     @Override
+    @Transactional
     public void updateUserChampionInfo(String SummerId, String puuid, long champId, int kill, int death, int assist, boolean win){
 
         // 1. UserChampionInfo 안에 puuid에 해당하는 ChampId가 존재하는지 확인
@@ -39,7 +41,9 @@ public class UserChampionInfoServiceImpl implements UserChampionInfoService{
         // 2.2 win == true 면 해당 row의 win count에 ++ 아니라면 defeat count에 ++
         // return
         else {
-
+            UserChampionInfo userChampionInfo = userChampionInfoRepository.findUserChampionInfoByPuuidAndChampionId(puuid,champId);
+            userChampionInfo.updateUserChampion(kill, death, assist, win);
+            //userChampionInfoRepository.save(userChampionInfo);
         }
     }
 }

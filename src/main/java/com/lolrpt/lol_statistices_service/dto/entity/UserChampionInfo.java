@@ -65,4 +65,20 @@ public class UserChampionInfo extends Common {
         this.createdDateTime = createdDateTime;
         this.updatedDateTime = updatedDateTime;
     }
+
+    public void updateUserChampion(int kill, int death, int assist, boolean win){
+        this.killCount += kill;
+        this.deathCount += death;
+        this.assistCount += assist;
+        this.kda = this.deathCount == 0 ?(double) (this.killCount + this.assistCount) : (double) (this.killCount + this.assistCount) / this.deathCount;
+        this.playCount++;
+        if(win){
+            this.winCount ++;
+        }
+        else{
+            this.lossCount ++;
+        }
+        this.winRate = (double) (this.winCount / this.playCount) * 100;
+        this.updatedDateTime = LocalDateTime.now();
+    }
 }
