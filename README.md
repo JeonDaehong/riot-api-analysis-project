@@ -1,21 +1,3 @@
-# Riot Statistics Service
-
-## Overview
-
-Welcome to the Riot Statistics Service project! This project aims to provide a comprehensive statistics service for Riot Games, utilizing their official API to gather and present valuable in-game data. While the primary focus is on implementing desired features, we also prioritize performance optimization and maintaining clean, well-documented code.
-
-1. Studying How to Receive and Make API Calls from the Official Site
-2. Project for Learning Collaboration and Team GitHub Practices (Emphasis on Commit Messages and Pull Requests)
-3. A Project Focusing Not Only on Implementation but Also on Performance and Clean Code, Simultaneously Implementing Desired Features
-
-## Project Status
-
-🚧 **Currently on Hold** 🚧
-
-Due to other commitments, including job search activities and involvement in other projects, development on this project is temporarily suspended. We appreciate your understanding and will resume work as soon as possible.
-
-<hr>
-
 # Riot 통계 서비스
 
 ## 개요
